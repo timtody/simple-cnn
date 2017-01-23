@@ -3,6 +3,10 @@ from sklearn.datasets import fetch_mldata
 from scipy import ndimage
 
 mnist = fetch_mldata('MNIST original')
+X, y = mnist.data , mnist.target
+X_train, X_test = X[:60000], X[60000:]
+y_train, y_test = y[:60000], y[60000:]
+
 
 class Model():
     def __init__(self):
@@ -19,9 +23,9 @@ class Model():
 
     def forward(self, X):
         #propagate input through network
-        self.z2 = ndimage.convolve(X, self.kernel, mode='constant', cval=0.0)
+        self.z2 = ndimage.convolve(X.reshape(28,28), self.kernel, mode='constant', cval=0.0)
         self.a2 = self.sigmoid(self.z2)
-        self.z3 = np.dot(self.a2, self.W2)
+        self.z3 = np.dot(self.a2.reshape(1, 784), self.W2)
         _y = self.sigmoid(self.z3)
         return self.softmax(_y)
 
@@ -34,6 +38,25 @@ class Model():
         self.probs = self.exp_scores / np.sum(self.exp_scores, keepdims=True)
         return self.probs
 
+    def claculate_loss(self, X, y):
+        count = 0
+        loss = 0
+        for x in X:
+            self.z2 = ndimage.convolve(x.reshape(28, 28), self.kernel, mode='constant', cval=0.0)
+            self.a2 = self.sigmoid(self.z2)
+            self.z3 = np.dot(self.a2.reshape(1, 784), self.W2)
+            _y = self.sigmoid(self.z3)
+            probs = self.softmax(_y)
+            loss += y[count] * np.log(probs)
+            count += 1
+
+        sum = -np.sum(loss)
+        return (1 / len(X)) * sum
+
+
+
+
+
 
 model = Model()
-model.forward(mnist.data[0])
+print(model.claculate_loss(X,y))

@@ -27,7 +27,7 @@ class Model():
         self.a2 = self.sigmoid(self.z2)
         self.z3 = np.dot(self.a2.reshape(1, 784), self.W2)
         _y = self.sigmoid(self.z3)
-        return self.softmax(_y)
+        return np.argmax(self.softmax(_y), axis=1)
 
     def sigmoid(self, z):
         return 1/(1+np.exp(-z))
@@ -51,7 +51,7 @@ class Model():
             count += 1
 
         sum = -np.sum(loss)
-        return (1 / len(X)) * sum
+        return (1. / len(X)) * sum
 
 
 
@@ -59,4 +59,5 @@ class Model():
 
 
 model = Model()
-print(model.claculate_loss(X,y))
+print(model.forward(X_test[0]))
+print(model.claculate_loss(X_test,y_test))

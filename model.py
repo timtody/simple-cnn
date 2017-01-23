@@ -29,8 +29,14 @@ class Model():
         _y = self.sigmoid(self.z3)
         return np.argmax(self.softmax(_y), axis=1)
 
-    def sigmoid(self, z):
+    def sigmoid(z):
         return 1/(1+np.exp(-z))
+
+    def sigmoidPrime(z):
+        #derivative of sigmoid function
+        return np.exp(-z)/((1+np.exp(-z))**2)
+
+
 
     def softmax(self, y):
         self.exp_scores = np.exp(y)

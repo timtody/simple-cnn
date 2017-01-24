@@ -4,8 +4,11 @@ from scipy import ndimage, optimize
 import matplotlib
 import time
 
+#fetch training data
 mnist = fetch_mldata('MNIST original')
+#normalize training data
 X, y = mnist.data/255., mnist.target
+#train test split
 X_train, X_test = X[:60000], X[60000:]
 y_train, y_test = y[:60000], y[60000:]
 

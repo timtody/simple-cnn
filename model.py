@@ -2,6 +2,8 @@ import numpy as np
 from sklearn.datasets import fetch_mldata
 from scipy import ndimage, optimize
 import matplotlib
+import time
+
 mnist = fetch_mldata('MNIST original')
 X, y = mnist.data/255., mnist.target
 X_train, X_test = X[:60000], X[60000:]
@@ -135,8 +137,31 @@ model = Model()
 #note: costFunction and calculate_loss yield different results even though implementation should be equal
 #todo: -> SOLVE THAT!!!
 
+start_time = time.time()
+print("(1)#############################\n.costFunction method yields a weighted loss of \n%r\ncalculation took \n%r seconds" % (model.costFunction(X_test, y_test), time.time() - start_time))
+start_time = time.time()
+print("(2)#############################\n.calculate_loss method yields a weighted loss of \n%r\ncalculation took \n%r seconds" %(model.calculate_loss(X_test, y_test), time.time() - start_time))
 
-print(model.costFunction(X_train, y_train), model.calculate_loss(X_train, y_train))
+
+# PYTHON OUT:
+#
+# C:\Users\Julius\Anaconda3\pythona.exe "C:/Users/Julius/PycharmProjects/simple cnn/model.py"
+# (1)#############################
+# .costFunction method yields a weighted loss of
+# 2.4663995654964355
+# calculation took
+# 1.7150936126708984 seconds
+# (2)#############################
+# .calculate_loss method yields a weighted loss of
+# 2.3962169016230606
+# calculation took
+# 1.3020744323730469 seconds
+#
+# Process finished with exit code 0
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.datasets import fetch_mldata
 from scipy import ndimage, optimize
 import matplotlib
-import time
+import time, PIL
 
 #fetch training data
 mnist = fetch_mldata('MNIST original')
@@ -12,33 +12,48 @@ X, y = mnist.data/255., mnist.target
 X_train, X_test = X[:60000], X[60000:]
 y_train, y_test = y[:60000], y[60000:]
 
+def setupKernel(dim0, dim1, w1):
+    #sets up convolution matrix with dim0xdim1 filter kernel
+    #
+    print("setting up convolution matrix...")
+    for i in range(w1.shape[1]):
+        target = [[x + i, x + i + dim1 * 2] for x in range(dim0)]
+        target = [item for sublist in target for item in sublist]
+
+        for j in range(w1.shape[0]):
+            if j not in target:
+                w1.itemset(j * w1.shape[1] + i, 0)
+        w1 = np.around(w1, decimals=2)
+    print("done.")
+    return w1
+
 
 class Model():
     def __init__(self):
         #hyperparameters
         self.inputLayerSize = 28*28
         self.outputLayerSize = 10
-        self.hiddenLayerSize = 28*28
+        self.hiddenLayerSize = 24*24
+        self.reg_lambda = 0.01  # regularization strength
+        self.epsilon = 0.01     # learning rate
 
         #weights
-        self.W1 = np.random.randn(5, 5)
+        self.w1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize)
+        self.W1 = setupKernel(5, 5, self.w1)
+
         self.W2 = np.random.randn(self.hiddenLayerSize,
                                   self.outputLayerSize)
 
     def forward(self, X):
         #todo: validate
-        yHat = np.empty([1,10])
-        for x in X:
-            #propagate input through network
-            self.z2 = ndimage.convolve(x.reshape(28,28), self.W1, mode='constant', cval=0.0)
-            self.a2 = self.sigmoid(self.z2)
-            self.z3 = np.dot(self.a2.reshape(1, 784), self.W2)
-            _y = self.sigmoid(self.z3)
-            out = self.softmax(_y)
+        #propagate input through network
+        self.z2 = np.dot(X, self.W1)
+        self.a2 = self.sigmoid(self.z2)
+        self.z3 = np.dot(self.a2, self.W2)
+        _y = self.sigmoid(self.z3)
+        out = self.softmax(_y)
 
-            yHat = np.concatenate((yHat, out), axis=0)
-
-        return yHat
+        return out
 
     def sigmoid(self, z):
         return 1/(1+np.exp(-z))
@@ -53,34 +68,6 @@ class Model():
         self.probs = self.exp_scores / np.sum(self.exp_scores, keepdims=True)
         return self.probs
 
-    def calculate_loss(self, X_loss, y_loss):
-        #todo: why do costFunction and calculate_loss yield different results?
-        count = 0
-        loss = 0
-        for x in X_loss:
-            self.z2 = ndimage.convolve(x.reshape(28, 28), self.W1, mode='constant', cval=0.0)
-            self.a2 = self.sigmoid(self.z2)
-            self.z3 = np.dot(self.a2.reshape(1, 784), self.W2)
-            _y = self.sigmoid(self.z3)
-            probs = self.softmax(_y)[0]
-            loss -= np.log(probs[int(y_loss[count])])
-            count += 1
-
-        return (1. / len(X_loss)) * loss
-
-    def getParams(self):
-        # Get W1 and W2 unrolled into vector:
-        params = np.concatenate((self.W1.ravel(), self.W2.ravel()))
-        return params
-
-    def setParams(self, params):
-            # Set W1 and W2 using single paramater vector.
-        W1_start = 0
-        W1_end = 25
-        self.W1 = np.reshape(params[W1_start:W1_end], (5, 5))
-        W2_end = W1_end + self.hiddenLayerSize * self.outputLayerSize
-        self.W2 = np.reshape(params[W1_end:W2_end], (self.hiddenLayerSize, self.outputLayerSize))
-
     def costFunction(self, X, y):
         #todo: validate
         #Compute cost for given X,y, use weights already stored in class.
@@ -88,62 +75,55 @@ class Model():
         self.yHat = self.forward(X)
         corect_logprobs = -np.log(self.yHat[range(len(X)), y])
         data_loss = np.sum(corect_logprobs)
-        J = data_loss * (1. / len(X))
+        J = data_loss * (1. / (len(X)))
         return J
 
     def costFunctionPrime(self, X, y):
-        #todo: implement
-        dJdW1 = None
-        dJdW2 = None
-        return dJdW1, dJdW2
+        #todo: solve issues with X.T = [0. , .... , 0.]
+        y = y.astype(int)
+        self.yHat = self.forward(X)
+        self.yHat[range(len(X)), y] -= 1
+        dW2 = (self.a2.T).dot(self.yHat)
+        delta2 = self.yHat.dot(self.W2.T) * (1 - np.power(self.a2, 2))
+        dW1 = np.dot(X.T, delta2)
 
-    def computeGradients(self, X, y):
-        #todo: understand
-        dJdW1, dJdW2 = self.costFunctionPrime(X, y)
-        return np.concatenate((dJdW1.ravel(), dJdW2.ravel()))
+        return dW1, dW2
+
+    def fit(self, X, y, num):
+        for i in range(num):
+
+            #backpropagation
+            dW1, dW2 = self.costFunctionPrime(X, y)
 
 
-class Trainer:
-    #todo: understand
-    def __init__(self, N):
-        self.N = N
+            dW1 += self.reg_lambda
+            dW2 += self.reg_lambda
 
-    def costFunctionWrapper(self, params, X, y):
-        self.N.setParams(params)
-        cost = self.N.costFunction(X, y)
-        grad = self.N.computeGradients(X, y)
-        return cost, grad
+            # Gradient descent parameter update
+            self.W1 += -self.epsilon * dW1
+            self.W2 += -self.epsilon * dW2
 
-    def callBackF(self, params):
-        self.N.setParams(params)
-        self.J.append(self.N.costFunction(self.X, self.y))
+            if i % 300 == 0:
+                pass
+                #print("loss at iteration %r is %r, dw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
 
-    def train(self, X, y):
-        #internal variable for callback function
-        self.X = X
-        self.y = y
 
-        #store costs
-        self.J = []
-        params0 = self.N.getParams()
-        options = {'maxiter': 200, 'disp': True}
-        _res = optimize.minimize(self.costFunctionWrapper, params0,
-                                 jac=True, method='BFGS', args=(X, y),
-                                 options=options, callback=self.callBackF)
-        self.N.setParams(_res.x)
-        self.optimizationResults = _res
+
+
 
 
 
 
 model = Model()
-#note: costFunction and calculate_loss yield different results even though implementation should be equal
-#todo: -> SOLVE THAT!!!
+model.fit(X_test, y_test, 5000)
 
-start_time = time.time()
-print("(1)#############################\n.costFunction method yields a weighted loss of \n%r\ncalculation took \n%r seconds" % (model.costFunction(X_test, y_test), time.time() - start_time))
-start_time = time.time()
-print("(2)#############################\n.calculate_loss method yields a weighted loss of \n%r\ncalculation took \n%r seconds" %(model.calculate_loss(X_test, y_test), time.time() - start_time))
+
+
+
+
+
+#start_time = time.time()
+#print("(1)#############################\n.costFunction method yields a weighted loss of \n%r\ncalculation took \n%r seconds" % (model.costFunction(X_test, y_test), time.time() - start_time))
 
 
 # PYTHON OUT:
@@ -154,24 +134,9 @@ print("(2)#############################\n.calculate_loss method yields a weighte
 # 2.4663995654964355
 # calculation took
 # 1.7150936126708984 seconds
-# (2)#############################
-# .calculate_loss method yields a weighted loss of
-# 2.3962169016230606
-# calculation took
-# 1.3020744323730469 seconds
 #
 # Process finished with exit code 0
 
 
 
 
-
-
-
-#saved for later:
-# T = Trainer(model)
-# T.train(X_test, y_test)
-# matplotlib.plot(T.J)
-# matplotlib.grid(1)
-# matplotlib.xlabel('Iterations')
-# matplotlib.ylabel('Cost')

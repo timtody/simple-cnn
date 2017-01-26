@@ -104,8 +104,7 @@ class Model():
             self.W2 += -self.epsilon * dW2
 
             if i % 300 == 0:
-                pass
-                #print("loss at iteration %r is %r, dw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
+                print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
 
 
 

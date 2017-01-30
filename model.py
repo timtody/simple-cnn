@@ -9,22 +9,24 @@ mnist = fetch_mldata('MNIST original')
 #normalize training data
 X, y = mnist.data/255., mnist.target
 #train test split
-X_train, X_test = X[:60000], X[60000:]
-y_train, y_test = y[:60000], y[60000:]
+X_train, X_test = X[:60000], X[68000:]
+y_train, y_test = y[:60000], y[68000:]
 
 def setupKernel(dim0, dim1, w1):
     #sets up convolution matrix with dim0xdim1 filter kernel
     #
     print("setting up convolution matrix...")
+    weights = np.random.randn(dim0*dim1)
+
     for i in range(w1.shape[1]):
         target = [[x + i, x + i + dim1 * 2] for x in range(dim0)]
         target = [item for sublist in target for item in sublist]
-
+        count = 0
         for j in range(w1.shape[0]):
-            if j not in target:
-                w1.itemset(j * w1.shape[1] + i, 0)
-        w1 = np.around(w1, decimals=2)
-    print("done.")
+            if j in target:
+                w1.itemset(j * w1.shape[1] + i, weights[count])
+                count += 1
+            print("done.")
     return w1
 
 
@@ -38,7 +40,7 @@ class Model():
         self.epsilon = 0.01     # learning rate
 
         #weights
-        self.w1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize)
+        self.w1 = np.zeros((self.inputLayerSize, self.hiddenLayerSize))
         self.W1 = setupKernel(5, 5, self.w1)
 
         self.W2 = np.random.randn(self.hiddenLayerSize,
@@ -92,28 +94,24 @@ class Model():
     def fit(self, X, y, num):
         for i in range(num):
 
-            #backpropagation
+            # backpropagation
             dW1, dW2 = self.costFunctionPrime(X, y)
-
 
             dW1 += self.reg_lambda
             dW2 += self.reg_lambda
 
-            # Gradient descent parameter update
+            # gradient descent parameter update
             self.W1 += -self.epsilon * dW1
             self.W2 += -self.epsilon * dW2
 
-            if i % 300 == 0:
+            if i % 500 == 0:
                 print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
 
 
 
 
-
-
-
-
 model = Model()
+print(model.costFunction(X, y))
 model.fit(X_test, y_test, 5000)
 
 

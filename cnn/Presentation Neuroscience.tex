@@ -96,10 +96,59 @@ Convolutional Neural Networks (CNNs) are a subtype of Neural Networks:
 \item Convolutional layers are not fully connected; each neurons is locally connected with a subsection of the previous layer
 \end{enumerate}
 \end{frame}
-\begin{frame}{Background and Motivation - Convolutional Neural Networks}
+
+\subsection{Background and Motivation - Application}
+\begin{frame}{Background and Motivation - Application}
+Visual Object Recognition
+\begin{figure}
+\centering
+\includegraphics[width = 0.4\linewidth]{images/KSH-results.png}
+\caption{ImageNet Classification with Deep Convolutional
+Neural Networks}
+\label{fig:principle}
+\end{figure}
+ImageNet by Krizhevsky et al (2012) classified 1.2 million
+high-resolution images in the ImageNet LSVRC-2010 into 1000 different classes.
+It achieves error rates of 37.5\% for the top result and 17.0\% for the top-5 results
+
+
+%The neural network, which has 60 million parameters and 650,000 neurons, consists
+%of five convolutional layers, some of which are followed by max-pooling layers,
+%and three fully-connected layers with a final 1000-way softmax
 
 \end{frame}
+
+\begin{frame}{Background and Motivation - Application}
+Text Classification
+\begin{figure}
+\centering
+\includegraphics[width = 0.4\linewidth]{images/mnist.png}
+\caption{Excerpt of mnist}
+\label{fig:principle}
+\end{figure}
+fehlt: etwas Erklärung hierzu
+\end{frame}
+
+
+
+
+
+\section{Components}
+\begin{frame}{Components}
+hier Bild eines CNNs unseres Typs mit Komponenten
+
+
+\begin{enumerate}
+\item Neuron
+\item Kernel-Function
+\item Sigmoid function
+\item softmax
+\end{enumerate}
+
+\end{frame}
+
 \section{Propagation}
+
 \begin{frame}{Propagation - Forward Propagation}
 Forward propagation is  the process of computing the output of a network for a given input
  \begin{figure}
@@ -196,7 +245,10 @@ The
 % https://bfeba431-a-62cb3a1a-s-sites.googlegroups.com/site/deeplearningcvpr2014/ranzato_cvpr2014_DLtutorial.pdf?attachauth=ANoY7cpoT6OKao2g3iqQB4JqrLBF4e9GfZ06wOsnqfD_Dy5aob09rA3XzGPQSysUphYafHjkncEfoJPPyab19s4v8tfQS65Xk57NWieQOFC1zrYR2O_0gUN1Bsb64TS6kucrQP2prHjwwO4-Bc_9IRzGfWtlSMUGL_SxZnW_uSJHNbCzTQSfeZicjRxOCsBCNcA-4ifO2z8HaCqegyP8LQQGlp9gA7bPiIva1wxa69xKa7PB0iipEVWW180McZkDbBjefD0Thr13&attredirects=0
 %figure forward propagation http://briandolhansky.com/blog/2013/9/27/artificial-neural-networks-backpropagation-part-4
 % back propagation: http://neuralnetworksanddeeplearning.com/chap2.html
+% Kernel function + KSH results http://colah.github.io/posts/2014-07-Understanding-Convolutions/
+% mnist image: http://neuralnetworksanddeeplearning.com/chap6.html
 http://cs231n.github.io/convolutional-networks/
 http://colah.github.io/posts/2014-07-Conv-Nets-Modular/
+http://www.cs.toronto.edu/~fritz/absps/imagenet.pdf
 \end{thebibliography}
 \end{document}

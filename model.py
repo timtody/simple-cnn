@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.datasets import fetch_mldata
 import matplotlib.pyplot as plt
 import time, pickle, warnings
+
 warnings.filterwarnings('error')
 try:
     warnings.warn(Warning())
@@ -14,8 +15,8 @@ mnist = fetch_mldata('MNIST original')
 #normalize training data
 X, y = mnist.data/255., mnist.target
 #train test split
-X_train, X_test = X[:60000], X[68000:]
-y_train, y_test = y[:60000], y[68000:]
+X_train, X_test = X[40000:60000], X[60000:]
+y_train, y_test = y[40000:60000], y[60000:]
 
 def setupKernel(dim0, dim1, w1):
     #sets up convolution matrix with dim0xdim1 filter kernel
@@ -42,7 +43,7 @@ class Model():
         self.outputLayerSize = 10
         self.hiddenLayerSize = 24*24
         self.reg_lambda = 0.005  # regularization strength
-        self.epsilon = 0.01    # learning rate
+        self.epsilon = 0.003    # learning rate
 
         #weights
         self.w1 = np.zeros((self.inputLayerSize, self.hiddenLayerSize)) / np.sqrt(self.inputLayerSize)
@@ -80,6 +81,26 @@ class Model():
         probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
         return probs
 
+    def test(self, X, y):
+        num = len(X)
+        right = 0
+        yHat = np.argmax(self.forward(X), axis=1)
+        y = y.astype(int)
+
+        for i, e in enumerate(yHat):
+            if e == y[i]:
+                right += 1
+        print(right)
+        return right / num
+
+
+
+
+
+
+
+
+
     def costFunction(self, X, y):
         #todo: validate
         #Compute cost for given X,y, use weights already stored in class.
@@ -94,36 +115,56 @@ class Model():
     def costFunctionPrime(self, X, y):
 
         y = y.astype(int)
+
         delta3 = self.forward(X)
-
         delta3[range(len(X)), y] -= 1
-
-
-        #delta3 = np.multiply(delta3, self.tanh_deriv(self.z3))
-
         dW2 = (self.a2.T).dot(delta3)
         db2 = np.sum(delta3, axis=0, keepdims=True)
-
-        delta2 = np.dot(delta3, self.W2.T) * self.tanh_deriv(self.z2)
-
+        delta2 = delta3.dot(self.W2.T) * (1 - np.power(self.a2, 2))
         dW1 = np.dot(X.T, delta2)
         db1 = np.sum(delta2, axis=0)
+
+
+
+
+
+
+
+
+        # delta3 = self.forward(X)
+
+        #delta3[range(len(X)), y] -= 1
+
+
+
+        # delta3 = np.multiply(delta3, self.tanh_deriv(self.z3))
+        #
+        # for x in delta3:
+        #     print(x)
+        #
+        # dW2 = (self.a2.T).dot(delta3)
+        # db2 = np.sum(delta3, axis=0, keepdims=True)
+        #
+        # delta2 = np.dot(delta3, self.W2.T) * self.tanh_deriv(self.z2)
+        #
+        # dW1 = np.dot(X.T, delta2)
+        # db1 = np.sum(delta2, axis=0)
 
 
         return dW1, dW2, db1, db2
 
     def fit(self, X, y, num):
-        errors=[]
-        iterations=[]
+        errors = []
+        iterations = []
         loss_previous = self.costFunction(X, y)
         for i in range(num):
 
 
 
-            if i % 10 == 0:
+            if i % 100 == 0:
                 # print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
                 loss = self.costFunction(X, y)
-                print("loss at iteration %r has decreased by  %r" % (i, (loss_previous-loss)))
+                print("loss at iteration %r has decreased by %r and loss is %r" % (i, (loss_previous-loss), loss))
                 errors.append(loss)
                 iterations.append(i)
                 loss_previous = loss
@@ -140,6 +181,7 @@ class Model():
             self.b1 += -self.epsilon * db1
             self.W2 += -self.epsilon * dW2
             self.b2 += -self.epsilon * db2
+
         plt.plot(iterations, errors)
         plt.ylabel("Error")
         plt.show()
@@ -148,7 +190,10 @@ class Model():
 
 model = Model()
 #print(model.costFunction(X, y))
-model.fit(X_test, y_test, 1000)
+model.fit(X_train, y_train, 1000)
+res = model.test(X_test, y_test)
+
+print(res)
 
 
 

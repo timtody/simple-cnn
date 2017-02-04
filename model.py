@@ -8,21 +8,21 @@ try:
     warnings.warn(Warning())
 except Warning:
     print('Warning was raised as an exception!')
-np.seterr(all='raise')
+#np.seterr(all='raise')
 
 #fetch training data
 mnist = fetch_mldata('MNIST original')
 #normalize training data
 X, y = mnist.data/255., mnist.target
 #train test split
-X_train, X_test = X[40000:60000], X[60000:]
-y_train, y_test = y[40000:60000], y[60000:]
+X_train, X_test = X[50000:60000], X[65000:]
+y_train, y_test = y[50000:60000], y[65000:]
 
 def setupKernel(dim0, dim1, w1):
     #sets up convolution matrix with dim0xdim1 filter kernel
     #
     print("setting up convolution matrix...")
-    weights = np.random.randn(dim0*dim1)
+    weights = np.random.randn(dim0*dim1) / np.sqrt(dim0)
 
     for i in range(w1.shape[1]):
         target = [[x + i, x + i + dim1 * 2] for x in range(dim0)]
@@ -42,16 +42,16 @@ class Model():
         self.inputLayerSize = 28*28
         self.outputLayerSize = 10
         self.hiddenLayerSize = 24*24
-        self.reg_lambda = 0.005  # regularization strength
-        self.epsilon = 0.003    # learning rate
+        self.reg_lambda = 0.9  # regularization strength
+        self.epsilon = 0.0003  # learning rate
 
         #weights
         self.w1 = np.zeros((self.inputLayerSize, self.hiddenLayerSize)) / np.sqrt(self.inputLayerSize)
-        self.W1 = setupKernel(5, 5, self.w1)
+        self.W1 = setupKernel(5, 5, self.w1)**2
         self.b1 = np.zeros((1, self.hiddenLayerSize))
 
-        self.W2 = np.random.randn(self.hiddenLayerSize,
-                                  self.outputLayerSize) / np.sqrt(self.hiddenLayerSize)
+        self.W2 = abs(np.random.randn(self.hiddenLayerSize,
+                                  self.outputLayerSize) / np.sqrt(self.hiddenLayerSize))**2
         self.b2 = np.zeros((1, self.outputLayerSize))
 
     def forward(self, X):
@@ -60,7 +60,7 @@ class Model():
         self.z2 = np.dot(X, self.W1)
         self.a2 = np.tanh(self.z2)
         self.z3 = np.dot(self.a2, self.W2)
-        _y = np.tanh(self.z3)
+        _y = self.z3
         out = self.softmax(_y)
 
         return out
@@ -90,7 +90,7 @@ class Model():
         for i, e in enumerate(yHat):
             if e == y[i]:
                 right += 1
-        print(right)
+
         return right / num
 
 
@@ -158,10 +158,12 @@ class Model():
         iterations = []
         loss_previous = self.costFunction(X, y)
         for i in range(num):
+            self.epsilon = self.epsilon * 0.99
 
 
 
-            if i % 100 == 0:
+            if i % 1 == 0:
+                #self.epsilon = self.epsilon * 0.7
                 # print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
                 loss = self.costFunction(X, y)
                 print("loss at iteration %r has decreased by %r and loss is %r" % (i, (loss_previous-loss), loss))
@@ -169,11 +171,16 @@ class Model():
                 iterations.append(i)
                 loss_previous = loss
 
+                print(self.test(X_train, y_train))
+                print(self.test(X_test, y_test))
+
             # backpropagation
             dW1, dW2, db1, db2 =  self.costFunctionPrime(X, y)
             #print(dW1, dW2)
-            dW1 += self.reg_lambda
+            #dW1 += self.reg_lambda
             dW2 += self.reg_lambda
+
+
             #print(dW1.shape, dW2.shape)
 
             # gradient descent parameter update
@@ -183,14 +190,17 @@ class Model():
             self.b2 += -self.epsilon * db2
 
         plt.plot(iterations, errors)
-        plt.ylabel("Error")
+        plt.yscale('log')
+        plt.ylabel("Error (log) ")
+        plt.xlabel("Iterations")
+        #plt.grid(1)
         plt.show()
 
 
 
 model = Model()
 #print(model.costFunction(X, y))
-model.fit(X_train, y_train, 1000)
+model.fit(X_train, y_train, 10)
 res = model.test(X_test, y_test)
 
 print(res)

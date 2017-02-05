@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>MODEL</title>
+</head>
+<body>
+<div class="jumbotron text-center">
+  <h1>A simple CNN</h1>
+  <p>by Shawn Cala and Julius Taylor</p>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3>Models</h3>
+      <table class="table table-striped">
+          <thead>
+          <tr>
+              {% for t in th %}
+              <th>
+                {{ t }}
+              </th>
+              {% endfor %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for model in models %}
+      <tr onclick="window.document.location='shitasspetfucking';">
+        <td data-href='url://shitasspetfucker'>{{model[0]}}</td>
+        <td>{{model[1]}}</td>
+      </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    <div class="col-sm-4">
+      <h3>Data</h3>
+                  {% for pic in pictures %}
+
+        <a href="{{ pic.ref }}">
+      <img src="static/{{ pic.path }}" class="img-responsive" alt="{{ pic.path }}" width="56" height="56">
+        </a>
+                  {% endfor %}
+
+    </div>
+    <div class="col-sm-4">
+      <h3>Prediction</h3>
+          <h1> <span class="label label-primary">{{ prediction }}</span></h1>
+        <h4> <span class="label label-primary">Target: {{ target }}</span></h4>
+
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
+

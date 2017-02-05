@@ -1,5 +1,7 @@
 import numpy as np
+import scipy
 from sklearn.datasets import fetch_mldata
+from tempfile import TemporaryFile
 import matplotlib.pyplot as plt
 import time, pickle, warnings
 
@@ -15,8 +17,8 @@ mnist = fetch_mldata('MNIST original')
 #normalize training data
 X, y = mnist.data/255., mnist.target
 #train test split
-X_train, X_test = X[50000:60000], X[65000:]
-y_train, y_test = y[50000:60000], y[65000:]
+X_train, X_test = X[:60000], X[60000:]
+y_train, y_test = y[:60000], y[60000:]
 
 def setupKernel(dim0, dim1, w1):
     #sets up convolution matrix with dim0xdim1 filter kernel
@@ -42,8 +44,8 @@ class Model():
         self.inputLayerSize = 28*28
         self.outputLayerSize = 10
         self.hiddenLayerSize = 24*24
-        self.reg_lambda = 0.9  # regularization strength
-        self.epsilon = 0.0003  # learning rate
+        self.reg_lambda = 0.009  # regularization strength
+        self.epsilon = 0.00001  # learning rate
 
         #weights
         self.w1 = np.zeros((self.inputLayerSize, self.hiddenLayerSize)) / np.sqrt(self.inputLayerSize)
@@ -75,9 +77,8 @@ class Model():
     def tanh_deriv(self, x):
         return 1.0 - np.tanh(x) ** 2
 
-    def softmax(self, y):
-
-        exp_scores = np.exp(y)
+    def softmax(self, X):
+        exp_scores = np.exp(X)
         probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
         return probs
 
@@ -93,20 +94,13 @@ class Model():
 
         return right / num
 
-
-
-
-
-
-
-
-
     def costFunction(self, X, y):
         #todo: validate
         #Compute cost for given X,y, use weights already stored in class.
         y = y.astype(int)
-        self.yHat = self.forward(X)
-        corect_logprobs = -np.log(self.yHat[range(len(X)), y])
+        yHat = self.forward(X)
+        rng = np.random.randint(0, 60000)
+        corect_logprobs = -np.log(yHat[range(len(X)), y])
         data_loss = np.sum(corect_logprobs)
         J = data_loss * (1. / (len(X)))
 
@@ -158,12 +152,9 @@ class Model():
         iterations = []
         loss_previous = self.costFunction(X, y)
         for i in range(num):
-            self.epsilon = self.epsilon * 0.99
-
-
-
-            if i % 1 == 0:
-                #self.epsilon = self.epsilon * 0.7
+            #self.epsilon = self.epsilon * 0.99
+            if i % 10 == 0:
+                self.epsilon = self.epsilon * 0.8
                 # print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
                 loss = self.costFunction(X, y)
                 print("loss at iteration %r has decreased by %r and loss is %r" % (i, (loss_previous-loss), loss))
@@ -171,8 +162,8 @@ class Model():
                 iterations.append(i)
                 loss_previous = loss
 
-                print(self.test(X_train, y_train))
-                print(self.test(X_test, y_test))
+                #print(self.test(X_train, y_train))
+                #print(self.test(X_test, y_test))
 
             # backpropagation
             dW1, dW2, db1, db2 =  self.costFunctionPrime(X, y)
@@ -196,14 +187,45 @@ class Model():
         #plt.grid(1)
         plt.show()
 
+    def dumpParams(self):
+        outfile = TemporaryFile(delete=False, dir='nets')
+        np.savez(outfile, W1=self.W1, W2=self.W2, b1=self.b1, b2=self.b2)
+        print("hi")
+
+    def fromParams(self, infile):
+        npzfile = np.load(infile)
+        self.W1 = npzfile['W1']
+        self.W2 = npzfile['W2']
+        self.b1 = npzfile['b1']
+        self.b2 = npzfile['b2']
+
+    def predict(self, X):
+        self.z2 = np.dot(X, self.W1)
+        self.a2 = np.tanh(self.z2)
+        self.z3 = np.dot(self.a2, self.W2)
+        _y = self.z3
+        exp_scores = np.exp(_y)
+        probs = exp_scores / np.sum(exp_scores,  keepdims=True)
+
+        return np.argmax(probs)
+
+
+
+
+
 
 
 model = Model()
+#model.fromParams('nets/tmpw01vt94l')
+#print(model.W1.shape)
 #print(model.costFunction(X, y))
-model.fit(X_train, y_train, 10)
-res = model.test(X_test, y_test)
+model.fit(X_train, y_train, 100)
+model.dumpParams()
+#model.fromParams('nets/tmppe2z0ujr')
+#res = model.test(X_test, y_test)
 
-print(res)
+#print(res)
+
 
 
 

@@ -1,0 +1,14 @@
+\beamer@sectionintoc {1}{Background}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Neural Networks}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Structure}{4}{0}{1}
+\beamer@sectionintoc {2}{Convolutional Neural Networks}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{Concept}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{Kernel function}{7}{0}{2}
+\beamer@subsectionintoc {2}{3}{Application}{8}{0}{2}
+\beamer@sectionintoc {3}{Components}{10}{0}{3}
+\beamer@subsectionintoc {3}{1}{Activation function}{11}{0}{3}
+\beamer@subsectionintoc {3}{2}{Backpropagation}{17}{0}{3}
+\beamer@sectionintoc {4}{Problems}{27}{0}{4}
+\beamer@subsectionintoc {4}{1}{Overfitting}{27}{0}{4}
+\beamer@subsectionintoc {4}{2}{Underfitting}{28}{0}{4}
+\beamer@sectionintoc {5}{Code}{29}{0}{5}

@@ -4,9 +4,12 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{rotating}
+
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{movie15}
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 \title{Convolutional Neural Networks}
@@ -74,47 +77,240 @@ Neural Networks generally contain:
 \end{figure}
 
 \end{frame}
+
+\begin{frame}{The Problem Space}
+  \begin{itemize}
+  \item image classification: Image $\rightarrow$ Class that describes the image (eg. 'Cat')
+  \item recognizing patterns and generalizing from prior knowledge 
+  \item figure out features, that describe things
+  \end{itemize}
+\end{frame}
+
 \section{Convolutional Neural Networks}
 \subsection{Concept}
+
+
+
+
+
+
+\begin{frame}{Problems with image classification}
+  \begin{itemize}
+     \item naive approach: comparing pixels one by one
+     \item very sensitive to small changes and does not generalize	
+  \end{itemize}
+\begin{figure}
+\includegraphics[width = 0.4\linewidth]{images/equal.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+\begin{frame}{Problems with image classification}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/neq.jpg}
+\caption{Visualizing what computers see}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+\begin{frame}{Problems with image classification}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/diff.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}{What makes us conclude that two pictures match?}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/feat1.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{What makes us conclude that two pictures match?}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/feat2.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{What makes us conclude that two pictures match?}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/feat3.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{What makes us conclude that two pictures match?}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/features.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+
 \begin{frame}{Concept}
 Convolutional Neural Networks (CNNs) are a subtype of Neural Networks:
   \begin{itemize}
-     \item all neurons in a layer are identical 
-     \item layers are interconnected through a kernel function
-     \item different types of layers are used %(input, convolutional layer, RELU/tanh, maxpool,output
+  	\item is a type of feed-forward network
+  	\item structure inspired by the animal visual cortex
+     \item uses many identical copies of the same neuron
+     \item express computationally extensive models while keeping weights to learn small
+     \item breakthrough results in pattern recognition problems
+     
   \end{itemize}
 \end{frame}
-\begin{frame}{Background and Motivation - Convolutional Neural Networks}
+
+
+\begin{frame}{Structure}
 \begin{figure}
-\centering
-\includegraphics[width = 0.4\linewidth]{images/convexample.jpg}
-\caption{2-dimensional CNN}
+\includegraphics[width = 1\linewidth]{images/struct.jpg}
 \label{fig:principle}
 \end{figure}
-\begin{enumerate}
-\item Using identical copies of the same neuron allows for complex models with few parameters
-\item Convolutional layers are not fully connected; each neurons is locally connected with a subsection of the previous layer.
-
-This is represented mathematically through a kernel function.
-\end{enumerate}
 \end{frame}
-\subsection{Kernel function}
 
-\begin{frame}{Kernel function}
-Kernel functions are an important component in many Neural Networks.
- \begin{figure}
-\centering
-e\includegraphics[width = 0.4\linewidth]{images/kernelfunction.png}
-\caption{Forward propagation in a complex neural network}
-todo: besseres Bild, vll gif mit kernelfunktion
+\begin{frame}{Structure}
+\begin{figure}
+\includegraphics[width = 1\linewidth]{images/struct1.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
 
+\begin{frame}{Finding Features}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/Filter.png}
+\label{fig:principle}
+\end{figure}
+\end{frame}
 
+\begin{frame}{Finding Features}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/mouse.png}
+\label{fig:principle}
+\end{figure}
+\end{frame}
 
-\label{fig:propagation}
+\begin{frame}{Finding Features}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/mousehi.png}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Finding Features}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/mouselo.png}
+\label{fig:principle}
 \end{figure}
 
+\end{frame}
+
+\subsection{Kernel function}
+
+
+\begin{frame}{Finding Features}
+\begin{figure}
+\includegraphics[width = 0.6\linewidth]{images/activation.png}
+\label{fig:principle}
+\end{figure}
+$(f\ast g)(c_1, c_2) = \sum_{a_1, a_2} f(a_1, a_2) \cdot g(c_1-a_1,~ c_2-a_2)$
 
 \end{frame}
+
+\begin{frame}{First Trick: Convolutions}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/convnet.png}
+\caption{A convolutional layer fed into a fully connected layer}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Structure}
+\begin{figure}
+\includegraphics[width = 1\linewidth]{images/struct2.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Second Trick: Pooling}
+\begin{figure}
+\includegraphics[width = 0.7\linewidth]{images/conv3.png}
+\caption{Added max pooling to previous net}
+\label{fig:principle}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Second Trick: Pooling}
+  \begin{itemize}
+  \item 'zooms' out
+  \item small patch after pooling corresponds to much larger patch before it
+   \item makes the network a little more invariant to location of features
+    \end{itemize}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/pooling.jpg}
+\caption{Features}
+\label{fig:principle}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Stacking Layers}
+  \begin{itemize}
+  \item layers are composable
+   \item we can feed the output of one layer into the input of another
+   \item with each layer, we can detect higher level, more abstract features
+    \end{itemize}
+\begin{figure}
+\includegraphics[width = 0.9\linewidth]{images/stacking.jpg}
+\caption{Features}
+\label{fig:principle}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Stacking Layers}
+\begin{figure}
+\includegraphics[width = 1\linewidth]{images/chain.png}
+\caption{Visualizing a ConvNet trained on handwritten digits}
+\label{fig:principle}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Structure}
+\begin{figure}
+\includegraphics[width = 1\linewidth]{images/struct3.jpg}
+\label{fig:principle}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Third Trick: Fully Connected}
+  \begin{itemize}
+  \item every value in a fully connected layer gets a 'vote' which affects the result of classification
+  \item values in certain positions are associated with a certain class
+    \end{itemize}
+\begin{figure}
+\includegraphics[width = 0.8\linewidth]{images/fc.jpg}
+\caption{Weights in a fully connected layer contributing to classification}
+\label{fig:principle}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Application}
 \begin{frame}{Application}

@@ -1,0 +1,14 @@
+\beamer@sectionintoc {1}{Background}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Neural Networks}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Structure}{4}{0}{1}
+\beamer@sectionintoc {2}{Convolutional Neural Networks}{6}{0}{2}
+\beamer@subsectionintoc {2}{1}{Problem Space}{6}{0}{2}
+\beamer@subsectionintoc {2}{2}{Concept}{14}{0}{2}
+\beamer@subsectionintoc {2}{3}{Kernel function}{21}{0}{2}
+\beamer@sectionintoc {3}{Components}{30}{0}{3}
+\beamer@subsectionintoc {3}{1}{Activation-function}{32}{0}{3}
+\beamer@subsectionintoc {3}{2}{Dense layer}{33}{0}{3}
+\beamer@subsectionintoc {3}{3}{Convolutional layer}{34}{0}{3}
+\beamer@subsectionintoc {3}{4}{Training}{35}{0}{3}
+\beamer@sectionintoc {4}{Results}{48}{0}{4}
+\beamer@subsectionintoc {4}{1}{Application}{50}{0}{4}

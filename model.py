@@ -57,14 +57,13 @@ class Model():
         self.b2 = np.zeros((1, self.outputLayerSize))
 
     def forward(self, X):
-        #todo: validate
         #propagate input through network
+        #W1 is convolution matrix
         self.z2 = np.dot(X, self.W1)
         self.a2 = np.tanh(self.z2)
         self.z3 = np.dot(self.a2, self.W2)
         _y = self.z3
         out = self.softmax(_y)
-
         return out
 
     def sigmoid(self, z):
@@ -153,17 +152,17 @@ class Model():
         loss_previous = self.costFunction(X, y)
         for i in range(num):
             #self.epsilon = self.epsilon * 0.99
-            if i % 10 == 0:
-                self.epsilon = self.epsilon * 0.8
+            if i % 1 == 0:
+                self.epsilon = self.epsilon * 0.9
                 # print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
                 loss = self.costFunction(X, y)
-                print("loss at iteration %r has decreased by %r and loss is %r" % (i, (loss_previous-loss), loss))
+                print("Iteration %r: loss: %r" % (i, round(loss, ndigits=6)))
                 errors.append(loss)
                 iterations.append(i)
                 loss_previous = loss
 
-                #print(self.test(X_train, y_train))
-                #print(self.test(X_test, y_test))
+                print("Accuracy (training): %r percent" % ( round(100*self.test(X_train, y_train),ndigits=4)))
+                print("Accuracy (test):  %r percent" % ( round(100*self.test(X_test, y_test),ndigits=4)))
 
             # backpropagation
             dW1, dW2, db1, db2 =  self.costFunctionPrime(X, y)
@@ -215,37 +214,7 @@ class Model():
 
 
 
-model = Model()
-#model.fromParams('nets/tmpw01vt94l')
-#print(model.W1.shape)
-#print(model.costFunction(X, y))
-model.fit(X_train, y_train, 100)
-model.dumpParams()
-#model.fromParams('nets/tmppe2z0ujr')
-#res = model.test(X_test, y_test)
 
-#print(res)
-
-
-
-
-
-
-
-#start_time = time.time()
-#print("(1)#############################\n.costFunction method yields a weighted loss of \n%r\ncalculation took \n%r seconds" % (model.costFunction(X_test, y_test), time.time() - start_time))
-
-
-# PYTHON OUT:
-#
-# C:\Users\Julius\Anaconda3\pythona.exe "C:/Users/Julius/PycharmProjects/simple cnn/model.py"
-# (1)#############################
-# .costFunction method yields a weighted loss of
-# 2.4663995654964355
-# calculation took
-# 1.7150936126708984 seconds
-#
-# Process finished with exit code 0
 
 
 

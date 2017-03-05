@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
 
-    model.model.fromParams('nets/tmpw01vt94l')
+    model.model.fromParams('nets/tmpk3owhr64')
     pictures = []
     piclist = os.listdir('static')
     for x in range(30):
@@ -26,7 +26,7 @@ def hello_world():
 @app.route('/<toPredict>')
 def prediction(toPredict):
 
-    model.model.fromParams('nets/tmpw01vt94l')
+    model.model.fromParams('nets/tmpk3owhr64')
     prediction = model.model.predict(model.X[int(toPredict)])
     pictures = []
     piclist = os.listdir('static')

@@ -16,17 +16,25 @@ This post consists of my implementation of a three layer Convolutional Neural Ne
 * [matplotlib](http://matplotlib.org/users/installing.html)
 
 ### Training a model
-First instantiate a model object
+First instantiate a model object and pass reg_lambda (regularization strength) and epsilon (learning rate) which default to **0.009** and **0.00001** respectively.
 ```
-model = Model()
+model = Model(reg_lamda=0.01, epsilon=0.00005)
 ```
-Then call the fit method passing the training data and the number of epochs (20-30 seems a good number, depending on your machine)
+Then call the fit method passing the training data and the number of epochs (20-30 seems like a good choice, depending on your machine).
 ```
 model.fit(X_train, y_train, 30)
 ```
-
-If you want you can tweak the hyperparameters in the code
+You can check the performance of your model after training:
 ```
-self.reg_lambda = 0.009  # regularization strength
-self.epsilon = 0.00001  # learning rate
+model.test(X_test, y_test)
 ```
+which uses the now trained parameters to predict labels for the test data X_test and compares them to the correct labels in y_test.
+You can save the trained parameters as numpy arrays to /nets with
+```
+model.dumpParams()
+```
+and load previously saved nets with
+```
+model.fromParams(nets/nameOfYourNet)
+```
+which overrides the current weight matrices W1 and W2 of model.

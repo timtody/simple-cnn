@@ -16,7 +16,12 @@ This post consists of my implementation of a three layer Convolutional Neural Ne
 * [matplotlib](http://matplotlib.org/users/installing.html)
 
 ### Training a model
-
+First instantiate a model object
 ```
-
+model = Model()
+```
+If you want you can tweak the hyperparameters in the code
+```
+self.reg_lambda = 0.009  # regularization strength
+self.epsilon = 0.00001  # learning rate
 ```

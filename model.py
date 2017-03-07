@@ -39,13 +39,13 @@ def setupKernel(dim0, dim1, w1):
 
 
 class Model():
-    def __init__(self):
+    def __init__(self, reg_lambda=0.009, epsilon=0.00001):
         #hyperparameters
         self.inputLayerSize = 28*28
         self.outputLayerSize = 10
         self.hiddenLayerSize = 24*24
-        self.reg_lambda = 0.009  # regularization strength
-        self.epsilon = 0.00001  # learning rate
+        self.reg_lambda = reg_lambda # regularization strength
+        self.epsilon = epsilon  # learning rate
 
         #weights
         self.w1 = np.zeros((self.inputLayerSize, self.hiddenLayerSize)) / np.sqrt(self.inputLayerSize)
@@ -67,16 +67,19 @@ class Model():
         return out
 
     def sigmoid(self, z):
+        #activation function
         return 1/(1+np.exp(-z))
 
     def sigmoidPrime(self, z):
-                #derivative of sigmoid function
+        #derivative of sigmoid activation function
         return self.sigmoid(z)*(1-self.sigmoid(z))
 
     def tanh_deriv(self, x):
+        #derivative of alternative acitivation function
         return 1.0 - np.tanh(x) ** 2
 
     def softmax(self, X):
+        #softmax normalozation
         exp_scores = np.exp(X)
         probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
         return probs
@@ -94,7 +97,6 @@ class Model():
         return right / num
 
     def costFunction(self, X, y):
-        #todo: validate
         #Compute cost for given X,y, use weights already stored in class.
         y = y.astype(int)
         yHat = self.forward(X)
@@ -106,9 +108,7 @@ class Model():
         return J
 
     def costFunctionPrime(self, X, y):
-
         y = y.astype(int)
-
         delta3 = self.forward(X)
         delta3[range(len(X)), y] -= 1
         dW2 = (self.a2.T).dot(delta3)
@@ -146,44 +146,42 @@ class Model():
 
         return dW1, dW2, db1, db2
 
-    def fit(self, X, y, num):
+    def fit(self, X, y, num, print_loss=False, print_frequence=1):
         errors = []
         iterations = []
         loss_previous = self.costFunction(X, y)
         for i in range(num):
             #self.epsilon = self.epsilon * 0.99
-            if i % 1 == 0:
+            if i % print_frequence == 0 and print_loss:
+                #decrease learning rate
                 self.epsilon = self.epsilon * 0.9
-                # print("loss at iteration %r is %r\ndw1 is %r, dw2 is %r" % (i, self.costFunction(X, y), dW1, dW2))
                 loss = self.costFunction(X, y)
                 print("Iteration %r: loss: %r" % (i, round(loss, ndigits=6)))
                 errors.append(loss)
                 iterations.append(i)
                 loss_previous = loss
-
+                
                 print("Accuracy (training): %r percent" % ( round(100*self.test(X_train, y_train),ndigits=4)))
                 print("Accuracy (test):  %r percent" % ( round(100*self.test(X_test, y_test),ndigits=4)))
 
             # backpropagation
             dW1, dW2, db1, db2 =  self.costFunctionPrime(X, y)
-            #print(dW1, dW2)
-            #dW1 += self.reg_lambda
+            
+            #only dW2 can be regularized because of matrix represenation of convolutions
             dW2 += self.reg_lambda
 
-
-            #print(dW1.shape, dW2.shape)
 
             # gradient descent parameter update
             self.W1 += -self.epsilon * dW1
             self.b1 += -self.epsilon * db1
             self.W2 += -self.epsilon * dW2
             self.b2 += -self.epsilon * db2
-
+        
+        #plot results
         plt.plot(iterations, errors)
         plt.yscale('log')
         plt.ylabel("Error (log) ")
         plt.xlabel("Iterations")
-        #plt.grid(1)
         plt.show()
 
     def dumpParams(self):

@@ -20,6 +20,11 @@ First instantiate a model object
 ```
 model = Model()
 ```
+Then call the fit method passing the training data and the number of epochs (20-30 seems a good number, depending on your machine)
+```
+model.fit(X_train, y_train, 30)
+```
+
 If you want you can tweak the hyperparameters in the code
 ```
 self.reg_lambda = 0.009  # regularization strength

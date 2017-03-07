@@ -24,11 +24,13 @@ Then call the fit method passing the training data and the number of epochs (20-
 ```
 model.fit(X_train, y_train, 30)
 ```
+### Testing your model
 You can check the performance of your model after training:
 ```
 model.test(X_test, y_test)
 ```
 which uses the now trained parameters to predict labels for the test data X_test and compares them to the correct labels in y_test.
+### Save weights for later use
 You can save the trained parameters as numpy arrays to /nets with
 ```
 model.dumpParams()

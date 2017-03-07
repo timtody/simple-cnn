@@ -1,6 +1,6 @@
 
 # A rudimentary Convolutional Neural Network in Python
-This post consists of my implementation of a three layer Convolutional Neural Network in Python. Please note that this network is neither effiecient nor archieves state of the art classification performance. Since the purpose is solely educational i tried to keep it as basic as possible with as little as possible dependencies.
+This post consists of my implementation of a three layer Convolutional Neural Network in Python. Please note that this network is neither effiecient nor achieves state of the art classification performance. Since the purpose is solely educational i tried to keep it as basic as possible with as little as possible dependencies.
 
 ## Getting Started
 ### Dependencies

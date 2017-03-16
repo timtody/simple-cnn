@@ -4,7 +4,7 @@ This post consists of an implementation of a three layer Convolutional Neural Ne
 
 ## Getting Started
 ### Dependencies
-#### I strongly advise using the Anaconda3 distribution which contains all dependencies
+#### I strongly advise using the Anaconda3 distribution
 
 * [Anaconda](https://www.continuum.io/downloads) - The Anaconda Python distribution
 

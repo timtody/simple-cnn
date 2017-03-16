@@ -2,20 +2,19 @@
 # A rudimentary Convolutional Neural Network in Python
 This post consists of an implementation of a three layer Convolutional Neural Network in Python. Please note that this network is neither effiecient nor achieves state of the art classification performance. Since the purpose is solely educational I tried to keep it as simple as possible with very few dependencies.
 
-## Getting Started
-### Dependencies
-#### I strongly advise using the Anaconda3 distribution
+## Installation
+### I strongly advise using the Anaconda3 distribution
 
 * [Anaconda](https://www.continuum.io/downloads) - The Anaconda Python distribution
 
-#### Without Anaconda
+### Without Anaconda
 * [Python](https://www.python.org/)
 * [Numpy](http://www.scipy.org/scipylib/download.html)
 * [Scipy](http://www.scipy.org/scipylib/download.html)
 * [scikit-learn](http://scikit-learn.org/stable/install.html)
 * [matplotlib](http://matplotlib.org/users/installing.html)
 
-### Training a model
+## Usage
 First instantiate a model object and pass reg_lambda (regularization strength) and epsilon (learning rate) which default to **0.009** and **0.00001** respectively.
 ```
 model = Model(reg_lamda=0.01, epsilon=0.00005)
@@ -40,3 +39,11 @@ and load previously saved nets with
 model.fromParams(nets/nameOfYourNet)
 ```
 which overrides the current weight matrices W1 and W2 of model.
+
+## Results
+
+## Convolutions
+TODO: write something about why this actually works
+
+## Credits 
+TODO: write credits

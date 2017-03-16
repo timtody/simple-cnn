@@ -41,6 +41,7 @@ model.fromParams(nets/nameOfYourNet)
 which overrides the current weight matrices W1 and W2 of model.
 
 ## Results
+TODO: show results
 
 ## Convolutions
 TODO: write something about why this actually works

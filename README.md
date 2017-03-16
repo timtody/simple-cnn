@@ -9,7 +9,7 @@ This post consists of an implementation of a three layer Convolutional Neural Ne
 * [Anaconda](https://www.continuum.io/downloads) - The Anaconda Python distribution
 
 #### Without Anaconda
-* [Python](https://www.python.org/) - The programming environment
+* [Python](https://www.python.org/)
 * [Numpy](http://www.scipy.org/scipylib/download.html)
 * [Scipy](http://www.scipy.org/scipylib/download.html)
 * [scikit-learn](http://scikit-learn.org/stable/install.html)

@@ -3,7 +3,7 @@
 This post consists of an implementation of a three layer Convolutional Neural Network in Python. Please note that this network is neither effiecient nor achieves state of the art classification performance. Since the purpose is solely educational I tried to keep it as simple as possible with very few dependencies.
 
 ## Installation
-### I strongly advise using the Anaconda3 distribution
+### Using Anaconda
 
 * [Anaconda](https://www.continuum.io/downloads) - The Anaconda Python distribution
 

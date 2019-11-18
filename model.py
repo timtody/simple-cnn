@@ -211,6 +211,10 @@ class Model():
 
 
 
+if __name__ == "__main__":
+    model = Model(reg_lambda=0.01, epsilon=0.00005)
+    model.fit(X_train, y_train, 30)
+    model.test(X_test, y_test)
 
 
 

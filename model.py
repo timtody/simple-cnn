@@ -5,13 +5,6 @@ from tempfile import TemporaryFile
 import matplotlib.pyplot as plt
 import time, pickle, warnings
 
-warnings.filterwarnings('error')
-try:
-    warnings.warn(Warning())
-except Warning:
-    print('Warning was raised as an exception!')
-#np.seterr(all='raise')
-
 #fetch training data
 mnist = fetch_openml('mnist_784', version=1)
 #normalize training data
@@ -147,6 +140,7 @@ class Model():
         return dW1, dW2, db1, db2
 
     def fit(self, X, y, num, print_loss=False, print_frequence=1):
+        print("Fitting model")
         errors = []
         iterations = []
         loss_previous = self.costFunction(X, y)

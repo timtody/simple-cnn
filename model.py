@@ -1,6 +1,6 @@
 import numpy as np
 import scipy
-from sklearn.datasets import fetch_mldata
+from sklearn.datasets import fetch_openml
 from tempfile import TemporaryFile
 import matplotlib.pyplot as plt
 import time, pickle, warnings
@@ -13,7 +13,7 @@ except Warning:
 #np.seterr(all='raise')
 
 #fetch training data
-mnist = fetch_mldata('MNIST original')
+mnist = fetch_openml('mnist_784', version=1)
 #normalize training data
 X, y = mnist.data/255., mnist.target
 #train test split
